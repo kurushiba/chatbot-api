@@ -5,7 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  OneToMany,
 } from 'typeorm';
+import { Conversation } from '../conversations/conversation.entity';
 
 @Entity()
 export class User {
@@ -27,4 +29,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Conversation, (conversation) => conversation.user)
+  conversations: Conversation[];
 }

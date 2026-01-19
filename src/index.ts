@@ -3,6 +3,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import setCurrentUser from './middleware/set-current-user';
 import authController from './modules/auth/auth.controller';
+import conversationController from './modules/conversations/conversation.controller';
 import datasource from './datasource';
 
 require('dotenv').config();
@@ -22,6 +23,7 @@ app.use('/uploads', express.static('uploads'));
 
 // ルートの設定
 app.use('/auth', authController);
+app.use('/conversations', conversationController);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('hello world');
@@ -62,7 +64,7 @@ async function startServer() {
       break;
     } else {
       console.log(
-        `Port ${currentPort} is already in use, trying ${currentPort + 1}...`
+        `Port ${currentPort} is already in use, trying ${currentPort + 1}...`,
       );
       currentPort++;
     }
@@ -70,12 +72,12 @@ async function startServer() {
 
   if (!serverStarted) {
     console.error(
-      `\n✗ Could not find an available port after ${MAX_PORT_ATTEMPTS} attempts.`
+      `\n✗ Could not find an available port after ${MAX_PORT_ATTEMPTS} attempts.`,
     );
     console.error(
       `✗ Tried ports ${DEFAULT_PORT} to ${
         DEFAULT_PORT + MAX_PORT_ATTEMPTS - 1
-      }\n`
+      }\n`,
     );
     process.exit(1);
   }
