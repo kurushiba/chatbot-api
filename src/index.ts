@@ -4,6 +4,7 @@ import { createServer } from 'http';
 import setCurrentUser from './middleware/set-current-user';
 import authController from './modules/auth/auth.controller';
 import conversationController from './modules/conversations/conversation.controller';
+import messageController from './modules/messages/message.controller';
 import datasource from './datasource';
 
 require('dotenv').config();
@@ -24,6 +25,7 @@ app.use('/uploads', express.static('uploads'));
 // ルートの設定
 app.use('/auth', authController);
 app.use('/conversations', conversationController);
+app.use('/conversations/:conversationId/messages', messageController);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('hello world');

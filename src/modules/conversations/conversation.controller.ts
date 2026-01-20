@@ -46,6 +46,42 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
+// Get a specific conversation with messages
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    if (!req.currentUser) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const { id } = req.params;
+    const conversation = await conversationRepository.findOne({
+      where: { id },
+      relations: ['messages'],
+      order: {
+        messages: {
+          createdAt: 'ASC',
+        },
+      },
+    });
+
+    if (!conversation) {
+      res.status(404).json({ message: 'Conversation not found' });
+      return;
+    }
+
+    if (conversation.userId !== req.currentUser.id) {
+      res.status(403).json({ message: 'Forbidden' });
+      return;
+    }
+
+    res.json(conversation);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Delete a conversation
 router.delete('/:id', async (req: Request, res: Response) => {
   try {

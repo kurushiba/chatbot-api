@@ -7,7 +7,9 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { OneToMany } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Message } from '../messages/message.entity';
 
 @Entity()
 export class Conversation {
@@ -29,4 +31,7 @@ export class Conversation {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Message, (message) => message.conversation)
+  messages: Message[];
 }
