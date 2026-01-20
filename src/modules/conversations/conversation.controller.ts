@@ -26,4 +26,24 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+// Get conversations list
+router.get('/', async (req: Request, res: Response) => {
+  try {
+    if (!req.currentUser) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const conversations = await conversationRepository.find({
+      where: { userId: req.currentUser.id },
+      order: { updatedAt: 'DESC' },
+    });
+
+    res.json(conversations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router;
