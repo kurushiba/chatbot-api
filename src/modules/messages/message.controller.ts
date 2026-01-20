@@ -11,10 +11,12 @@ const conversationRepository = datasource.getRepository(Conversation);
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { conversationId } = req.params;
-    const { role, content } = req.body;
+    const { role, content, imageUrl } = req.body;
 
-    if (!content || !role) {
-      res.status(400).json({ message: 'Content and role are required' });
+    if ((!content && !imageUrl) || !role) {
+      res
+        .status(400)
+        .json({ message: 'Content (or Image) and role are required' });
       return;
     }
 
@@ -38,6 +40,7 @@ router.post('/', async (req: Request, res: Response) => {
       conversationId,
       role,
       content,
+      imageUrl,
     });
 
     const savedMessage = await messageRepository.save(message);

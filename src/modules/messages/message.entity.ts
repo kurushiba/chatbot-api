@@ -28,6 +28,9 @@ export class Message {
   @Column('text')
   content: string;
 
+  @Column({ nullable: true })
+  imageUrl: string;
+
   @CreateDateColumn()
   createdAt: Date;
 }
