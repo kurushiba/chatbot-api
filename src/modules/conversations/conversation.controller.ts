@@ -108,4 +108,39 @@ router.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// Update conversation title
+router.patch('/:id', async (req: Request, res: Response) => {
+  try {
+    if (!req.currentUser) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const { id } = req.params;
+    const { title } = req.body;
+
+    if (!title) {
+      res.status(400).json({ message: 'Title is required' });
+      return;
+    }
+
+    const conversation = await conversationRepository.findOne({
+      where: { id, userId: req.currentUser.id },
+    });
+
+    if (!conversation) {
+      res.status(404).json({ message: 'Conversation not found' });
+      return;
+    }
+
+    conversation.title = title;
+    await conversationRepository.save(conversation);
+
+    res.json(conversation);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router;
